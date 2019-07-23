@@ -5,9 +5,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.ecommpay.sdk.components.ECMPActivity;
-import com.ecommpay.sdk.entities.ECMPPaymentInfo;
-import com.ecommpay.sdk.entities.ECMPRecurrentInfo;
+import com.ecommpay.sdk.ECMPActivity;
+import com.ecommpay.sdk.ECMPAdditionalField;
+import com.ecommpay.sdk.ECMPPaymentInfo;
+import com.ecommpay.sdk.ECMPRecurrentInfo;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,9 +30,16 @@ public class MainActivity extends AppCompatActivity {
         // Sign payment info
         paymentInfo.setSignature(signature);
 
+        // Set theme
+//        ECMPTheme theme = ECMPTheme.getDarkTheme();
+//        theme.fullScreenBackgroundColor = Color.GREEN;
+//        theme.showShadow = false;
+
         // Present Checkout UI
         startActivityForResult(ECMPActivity.buildIntent(this,
-                paymentInfo),
+                paymentInfo
+//                ,theme
+                ),
                 PAY_ACTIVITY_REQUEST);
     }
 
@@ -40,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PAY_ACTIVITY_REQUEST) {
+
             switch (resultCode) {
                 case ECMPActivity.RESULT_SUCCESS:
                 case ECMPActivity.RESULT_CANCELLED:
@@ -48,8 +57,12 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
 
-            if(data != null && data.hasExtra(ECMPActivity.DATA_INTENT_EXTRA)) {
-                String message = data.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA);
+            if(data != null && data.hasExtra(ECMPActivity.DATA_INTENT_EXTRA_ERROR)) {
+                String error = data.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_ERROR);
+            }
+
+            if(data != null && data.hasExtra(ECMPActivity.DATA_INTENT_EXTRA_TOKEN)) {
+                String token = data.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_TOKEN);
             }
         }
     }
@@ -78,7 +91,15 @@ public class MainActivity extends AppCompatActivity {
 
     // Additional
     void setDMSPayment(ECMPPaymentInfo paymentInfo) {
-        paymentInfo.setCreditCardPaymentType(ECMPPaymentInfo.CreditCardPaymentType.Auth);
+        paymentInfo.setAction(ECMPPaymentInfo.ActionType.Auth);
+    }
+
+    void setActionTokenize(ECMPPaymentInfo paymentInfo) {
+        paymentInfo.setAction(ECMPPaymentInfo.ActionType.Tokenize);
+    }
+
+    void setActionVerify(ECMPPaymentInfo paymentInfo) {
+        paymentInfo.setAction(ECMPPaymentInfo.ActionType.Verify);
     }
 
     void setToken(ECMPPaymentInfo paymentInfo) {
@@ -88,12 +109,27 @@ public class MainActivity extends AppCompatActivity {
     void setRecurrent(ECMPPaymentInfo paymentInfo) {
         ECMPRecurrentInfo recurrentInfo = new ECMPRecurrentInfo(
                 "R", // type
+                "20", // expiry day
                 "11", // expiry month
                 "2030", // expiry year
                 "M", // recurrent period
                 "12:00:00", // start time
                 "12-02-2020", // start date
                 "your_recurrent_id"); // recurrent payment ID
+        // Additional options if needed
+//        recurrentInfo.setAmount(1000);
+//        recurrentInfo.setSchedule(new ECMPRecurrentInfoSchedule[]{
+//                new ECMPRecurrentInfoSchedule("20-10-2020",1000),
+//                new ECMPRecurrentInfoSchedule("20-10-2020",1000)
+//        });
+
         paymentInfo.setRecurrent(recurrentInfo);
+    }
+
+    void setKnownAdditionalFields(ECMPPaymentInfo paymentInfo) {
+        paymentInfo.setECMPAdditionalFields(new ECMPAdditionalField[]{
+                new ECMPAdditionalField(ECMPAdditionalField.AdditionalFieldType.customer_first_name, "Mark"),
+                new ECMPAdditionalField(ECMPAdditionalField.AdditionalFieldType.billing_country, "US"),
+        });
     }
 }
