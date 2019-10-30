@@ -118,8 +118,8 @@ class MainActivity : AppCompatActivity() {
 
     internal fun setKnownAdditionalFields(paymentInfo: ECMPPaymentInfo) {
         paymentInfo.ecmpAdditionalFields = arrayOf(
-            ECMPAdditionalField(ECMPAdditionalField.AdditionalFieldType.customer_first_name, "Mark"),
-            ECMPAdditionalField(ECMPAdditionalField.AdditionalFieldType.billing_country, "US")
+            ECMPAdditionalField(ECMPAdditionalFieldEnums.AdditionalFieldType.customer_first_name, "Mark"),
+            ECMPAdditionalField(ECMPAdditionalFieldEnums.AdditionalFieldType.billing_country, "US")
         )
     }
 }

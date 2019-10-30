@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.ecommpay.sdk.ECMPActivity;
 import com.ecommpay.sdk.ECMPAdditionalField;
+import com.ecommpay.sdk.ECMPAdditionalFieldEnums;
 import com.ecommpay.sdk.ECMPPaymentInfo;
 import com.ecommpay.sdk.ECMPRecurrentInfo;
 
@@ -128,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
     void setKnownAdditionalFields(ECMPPaymentInfo paymentInfo) {
         paymentInfo.setECMPAdditionalFields(new ECMPAdditionalField[]{
-                new ECMPAdditionalField(ECMPAdditionalField.AdditionalFieldType.customer_first_name, "Mark"),
-                new ECMPAdditionalField(ECMPAdditionalField.AdditionalFieldType.billing_country, "US"),
+                new ECMPAdditionalField(ECMPAdditionalFieldEnums.AdditionalFieldType.customer_first_name, "Mark"),
+                new ECMPAdditionalField(ECMPAdditionalFieldEnums.AdditionalFieldType.billing_country, "US"),
         });
     }
 }
