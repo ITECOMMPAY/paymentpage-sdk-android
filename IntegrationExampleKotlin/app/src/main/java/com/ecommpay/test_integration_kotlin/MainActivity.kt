@@ -94,6 +94,10 @@ class MainActivity : AppCompatActivity() {
         paymentInfo.token = "token"
     }
 
+    internal fun setReceiptData(paymentInfo: ECMPPaymentInfo) {
+        paymentInfo.receiptData = "receipt data"
+    }
+
     internal fun setRecurrent(paymentInfo: ECMPPaymentInfo) {
         val recurrentInfo = ECMPRecurrentInfo(
             "R", // type

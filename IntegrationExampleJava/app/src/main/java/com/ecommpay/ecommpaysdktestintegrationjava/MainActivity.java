@@ -107,6 +107,11 @@ public class MainActivity extends AppCompatActivity {
         paymentInfo.setToken("token");
     }
 
+    void setReceiptData(ECMPPaymentInfo paymentInfo) {
+        final String RECEIPT_DATA = "receipt data";
+        paymentInfo.setReceiptData(RECEIPT_DATA);
+    }
+
     void setRecurrent(ECMPPaymentInfo paymentInfo) {
         ECMPRecurrentInfo recurrentInfo = new ECMPRecurrentInfo(
                 "R", // type
