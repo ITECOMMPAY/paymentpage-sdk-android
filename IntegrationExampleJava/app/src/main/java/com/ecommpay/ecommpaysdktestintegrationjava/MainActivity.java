@@ -146,6 +146,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // if you want to hide the saved cards, pass the value - true
+    void setHideSavedWallets(ECMPPaymentInfo paymentInfo) {
+        paymentInfo.setHideSavedWallets(false);
+    }
+
+    // For forced opening of the payment method, pass its code. Example: qiwi, card ...
+    void setForcePaymentMethod(ECMPPaymentInfo paymentInfo) {
+        paymentInfo.setForcePaymentMethod("card");
+    }
+
     // Setup 3D Secure 2.0 parameters
     void setThreeDSecureParams(ECMPPaymentInfo paymentInfo) {
         ECMPThreeDSecureInfo threeDSecureInfo = new ECMPThreeDSecureInfo();

@@ -99,6 +99,16 @@ class MainActivity : AppCompatActivity() {
         paymentInfo.receiptData = "receipt data"
     }
 
+    // if you want to hide the saved cards, pass the value - true
+    internal fun setHideSavedWallets(paymentInfo: ECMPPaymentInfo) {
+        paymentInfo.hideSavedWallets = false
+    }
+
+    // For forced opening of the payment method, pass its code. Example: qiwi, card ...
+    internal fun setForcePaymentMethod(paymentInfo: ECMPPaymentInfo) {
+        paymentInfo.forcePaymentMethod = "card"
+    }
+
     internal fun setRecurrent(paymentInfo: ECMPPaymentInfo) {
         val recurrentInfo = ECMPRecurrentInfo(
             "R", // type
