@@ -1,10 +1,11 @@
 package com.ecommpay.test_integration_kotlin
 
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
 import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.ecommpay.sdk.*
 import com.ecommpay.sdk.threeDSecure.*
+import com.google.android.gms.wallet.PaymentDataRequest
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +19,9 @@ class MainActivity : AppCompatActivity() {
 
         // Create payment info with product information
         val paymentInfo = getPaymentInfoOnlyRequiredParams() // getPaymentInfoAllParams
+
+        // enabled google pay
+        //configureGooglePayParams(paymentInfo)
 
         // Signature should be generated on your server and delivered to your app
         val signature = SignatureGenerator.generateSignature(paymentInfo.paramsForSignature, SECRET)
@@ -220,5 +224,11 @@ class MainActivity : AppCompatActivity() {
         threeDSecureInfo.threeDSecurePaymentInfo = threeDSecurePaymentInfo
 
         paymentInfo.ecmpThreeDSecureInfo = threeDSecureInfo
+    }
+
+    fun configureGooglePayParams(paymentInfo: ECMPPaymentInfo) {
+        paymentInfo.merchantId = "your merchant id"
+        paymentInfo.paymentDataRequest =
+            PaymentDataRequest.fromJson(GooglePayJsonParams.getJSON())
     }
 }

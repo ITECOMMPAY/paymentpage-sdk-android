@@ -1,1 +1,2 @@
+include ':ecommpaySDK'
 include ':app', ':ecommpaySDK'

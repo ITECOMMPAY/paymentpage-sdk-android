@@ -1,8 +1,8 @@
 package com.ecommpay.ecommpaysdktestintegrationjava;
 
 import android.content.Intent;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.ecommpay.sdk.ECMPActivity;
@@ -17,6 +17,7 @@ import com.ecommpay.sdk.threeDSecure.ECMPThreeDSecureInfo;
 import com.ecommpay.sdk.threeDSecure.ECMPThreeDSecureMpiResultInfo;
 import com.ecommpay.sdk.threeDSecure.ECMPThreeDSecurePaymentInfo;
 import com.ecommpay.sdk.threeDSecure.ECMPThreeDSecureShippingInfo;
+import com.google.android.gms.wallet.PaymentDataRequest;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Create payment info with product information
         ECMPPaymentInfo paymentInfo = getPaymentInfoOnlyRequiredParams(); // getPaymentInfoAllParams
+
+        // enabled google pay
+        //configureGooglePayParams(paymentInfo);
 
         // Signature should be generated on your server and delivered to your app
         String signature = SignatureGenerator.generateSignature(paymentInfo.getParamsForSignature(), SECRET);
@@ -238,5 +242,10 @@ public class MainActivity extends AppCompatActivity {
         threeDSecureInfo.setThreeDSecurePaymentInfo(threeDSecurePaymentInfo);
 
         paymentInfo.setEcmpThreeDSecureInfo(threeDSecureInfo);
+    }
+
+    void configureGooglePayParams(ECMPPaymentInfo paymentInfo) {
+        paymentInfo.setMerchantId("your merchant id");
+        paymentInfo.setPaymentDataRequest(PaymentDataRequest.fromJson(GooglePayJsonParams.INSTANCE.getJSON()));
     }
 }
