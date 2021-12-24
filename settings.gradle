@@ -1,5 +1,5 @@
 include ':IntegrationExampleJava'
-include ':IntegrationExampleJava:app'
+include ':IntegrationExampleJava:app_java'
 include ':IntegrationExampleKotlin'
-include ':IntegrationExampleKotlin:app'
+include ':IntegrationExampleKotlin:app_kotlin'
 include ':ecommpaySDK'
