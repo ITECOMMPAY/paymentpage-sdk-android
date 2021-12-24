@@ -1,0 +1,56 @@
+*.iml
+.composite
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+*.exec
+
+# Gradle files
+.gradle/
+build/
+paymentpage-sdk-android-sample/build/
+paymentpage-sdk-android/build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Log Files
+*.log
+
+# Android Studio captures folder
+captures/
+
+# External native build folder generated in Android Studio 2.2 and later
+.externalNativeBuild
+.cxx/
+
+/.idea/*
+!/.idea/codeInsightSettings.xml
+!/.idea/codeStyles/
+!/.idea/inspectionProfiles/
+!/.idea/scopes/
+.DS_Store
+/build
+/captures
+/attachments/*
+.cxx
+/projectFilesBackup/
+/projectFilesBackup1/
+*.gpg
+
+# Ignore Dokka files into docusaurus project
+docusaurus/docs/Android/Dokka
+
+.sign/keystore.properties
+.sign/release.keystore

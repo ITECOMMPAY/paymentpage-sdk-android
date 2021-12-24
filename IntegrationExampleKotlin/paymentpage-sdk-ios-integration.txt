@@ -1,2 +1,0 @@
-paymentpage-sdk-ios-integration
-paymentpage-sdk-android-integration

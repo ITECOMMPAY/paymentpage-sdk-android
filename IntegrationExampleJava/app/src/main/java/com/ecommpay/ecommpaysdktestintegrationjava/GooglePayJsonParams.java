@@ -1,0 +1,5 @@
+package com.ecommpay.ecommpaysdktestintegrationjava;
+
+public final class GooglePayJsonParams {
+    protected static final String ExampleJSON = "{\n  \"apiVersion\": 2,\n  \"apiVersionMinor\": 0,\n  \"merchantInfo\": {\n    \"merchantName\": \"Example Merchant\",\n    \"merchantId\": \"merchant_id\"\n  },\n  \"allowedPaymentMethods\": [\n    {\n      \"type\": \"CARD\",\n      \"parameters\": {\n        \"allowedAuthMethods\": [\"PAN_ONLY\", \"CRYPTOGRAM_3DS\"],\n        \"allowedCardNetworks\": [\"AMEX\", \"DISCOVER\", \"MASTERCARD\", \"VISA\"]\n      },\n      \"tokenizationSpecification\": {\n        \"type\": \"PAYMENT_GATEWAY\",\n        \"parameters\": {\n          \"gateway\": \"ecommpay\",\n          \"gatewayMerchantId\": \"gateway_merchant_id\"\n        }\n      }\n    }\n  ],\n  \"transactionInfo\": {\n    \"totalPriceStatus\": \"FINAL\",\n    \"totalPrice\": \"12.34\",\n    \"currencyCode\": \"USD\"\n  }\n}";
+}

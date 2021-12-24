@@ -1,0 +1,5 @@
+include ':IntegrationExampleJava'
+include ':IntegrationExampleJava:app'
+include ':IntegrationExampleKotlin'
+include ':IntegrationExampleKotlin:app'
+include ':ecommpaySDK'

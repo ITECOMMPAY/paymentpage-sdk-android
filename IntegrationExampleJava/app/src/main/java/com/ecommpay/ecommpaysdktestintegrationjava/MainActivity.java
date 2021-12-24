@@ -246,6 +246,6 @@ public class MainActivity extends AppCompatActivity {
 
     void configureGooglePayParams(ECMPPaymentInfo paymentInfo) {
         paymentInfo.setMerchantId("your merchant id");
-        paymentInfo.setPaymentDataRequest(PaymentDataRequest.fromJson(GooglePayJsonParams.INSTANCE.getJSON()));
+        paymentInfo.setPaymentDataRequest(PaymentDataRequest.fromJson(GooglePayJsonParams.ExampleJSON));
     }
 }
