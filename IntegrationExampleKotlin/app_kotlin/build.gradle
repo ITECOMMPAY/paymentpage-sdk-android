@@ -16,6 +16,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
 
@@ -31,10 +32,10 @@ android {
 
 dependencies {
     //ecommpaySDK
-    debugImplementation 'com.ecommpay:paymentpage-sdk-android:1.12.2'
+    releaseImplementation 'com.ecommpay:paymentpage-sdk-android:1.12.2'
 
-    //Use this implementation if you want to test another ecommpaySDK android library
-    //debugImplementation project(':ecommpaySDK')
+    //Use debug build type variant to implement this
+    debugImplementation project(':ecommpaySDK')
 
     //Android
     implementation "androidx.core:core-ktx:+"
