@@ -44,6 +44,24 @@ If some of the dependencies are already added in the dependencies {} section, do
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 ```
+## Importing libraries via MavenCentral
+The SDK for Android libraries can be imported via MavenCentral. To import the libraries via MavenCentral, you need to do the following:
+1. Open your application module (`build.gradle`);
+2. In the `repositories {}` section, specify the `mavenCentral` repository:
+```
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+}
+```
+3. In the `dependencies {}` section, add the following dependencies:
+```
+implementation "com.ecommpay:paymentpage-sdk-android:1.13.2"
+```
+****
 # Opening payment form
 This section contains samples of payment form invocation code in Java and Kotlin.
 ## Opening payment form in Java
@@ -101,6 +119,7 @@ startActivityForResult(ECMPActivity.buildIntent(this,
                     paymentInfo),
                     PAY_ACTIVITY_REQUEST);
 ```
+****
 ## Response processing
 To receive and process response with the payment processing results you need to override the `onActivityResult` method in activity from which you started `ECMPActivity`.
 ```

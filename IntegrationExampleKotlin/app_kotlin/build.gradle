@@ -32,10 +32,10 @@ android {
 
 dependencies {
     //ecommpaySDK
-    releaseImplementation 'com.ecommpay:paymentpage-sdk-android:1.13.1'
+    implementation 'com.ecommpay:paymentpage-sdk-android:1.13.2'
 
-    //Use debug build type variant to implement this
-    debugImplementation project(':ecommpaySDK')
+    //local implementation of ecommpaySDK
+    implementation project(':ecommpaySDK')
 
     //Android
     implementation "androidx.core:core-ktx:+"
