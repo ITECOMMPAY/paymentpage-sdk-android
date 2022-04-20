@@ -59,7 +59,7 @@ allprojects {
 ```
 3. In the `dependencies {}` section, add the following dependencies:
 ```
-implementation "com.ecommpay:paymentpage-sdk-android:1.13.2"
+implementation "com.ecommpay:paymentpage-sdk-android:LATEST_VERSION"
 ```
 ****
 # Opening payment form
