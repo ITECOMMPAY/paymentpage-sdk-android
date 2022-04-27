@@ -27,7 +27,7 @@ android {
 
 dependencies {
     //ecommpaySDK
-    implementation 'com.ecommpay:paymentpage-sdk-android:1.13.2'
+    implementation 'com.ecommpay:paymentpage-sdk-android:+'
 
     //local implementation of ecommpaySDK
     implementation project(':ecommpaySDK')

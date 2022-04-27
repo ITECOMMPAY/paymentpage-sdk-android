@@ -6,7 +6,7 @@ android {
     compileSdkVersion 31
     defaultConfig {
         applicationId "com.ecommpay.test_integration_kotlin"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"
@@ -32,7 +32,7 @@ android {
 
 dependencies {
     //ecommpaySDK
-    implementation 'com.ecommpay:paymentpage-sdk-android:1.13.2'
+    implementation 'com.ecommpay:paymentpage-sdk-android:+'
 
     //local implementation of ecommpaySDK
     implementation project(':ecommpaySDK')
