@@ -56,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
         //Additional STEP (if necessary): add google pay
         setupGooglePay();
 
+        //Additional STEP (if necessary): add funding fields for google pay
+        setupRecipientInfo();
+
         //Additional STEP (if necessary): custom behaviour of SDK
         setupScreenDisplayModes();
         //Or you can do this like that:
@@ -240,6 +243,13 @@ public class MainActivity extends AppCompatActivity {
     private void setECMPAdditionalFields(ECMPAdditionalField[] ecmpAdditionalFields) {
         paymentInfo.setECMPAdditionalFields(ecmpAdditionalFields);
     }
+    //Handling funding for google pay
+    private ECMPRecipientInfo getRecipientInfo() {
+        return paymentInfo.getEcmpRecipientInfo();
+    }
+    private void setRecipientInfo(ECMPRecipientInfo ecmpRecipientInfo) {
+        paymentInfo.setEcmpRecipientInfo(ecmpRecipientInfo);
+    }
     //3DS Info
     private ECMPThreeDSecureInfo getECMPThreeDSecureInfo() {
         return paymentInfo.getEcmpThreeDSecureInfo();
@@ -301,6 +311,15 @@ public class MainActivity extends AppCompatActivity {
         ecmpScreenDisplayModes.add(ECMPScreenDisplayMode.HIDE_SUCCESS_FINAL_PAGE);
         ecmpScreenDisplayModes.add(ECMPScreenDisplayMode.HIDE_DECLINE_FINAL_PAGE);
         setECMPScreenDisplayModes(ecmpScreenDisplayModes);
+    }
+
+    private void setupRecipientInfo() {
+        ECMPRecipientInfo ecmpRecipientInfo = new ECMPRecipientInfo(
+                "Wallet owner's name",
+                "Your wallet id",
+                "Country"
+        );
+        setRecipientInfo(ecmpRecipientInfo);
     }
 
     // Setup 3D Secure parameters

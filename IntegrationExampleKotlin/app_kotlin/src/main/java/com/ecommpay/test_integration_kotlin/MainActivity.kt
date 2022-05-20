@@ -54,6 +54,9 @@ class MainActivity : AppCompatActivity() {
         //Additional STEP (if necessary): add google pay
         setupGooglePay()
 
+        //Additional STEP (if necessary): add funding fields for google pay
+        setupRecipientInfo()
+
         //Additional STEP (if necessary): custom behaviour of SDK
         setupScreenDisplayModes()
     }
@@ -227,6 +230,13 @@ class MainActivity : AppCompatActivity() {
     private fun setECMPAdditionalFields(ecmpAdditionalFields: Array<ECMPAdditionalField>?) {
         paymentInfo.ecmpAdditionalFields = ecmpAdditionalFields
     }
+    //Handling funding for google pay
+    private fun getRecipientInfo(): ECMPRecipientInfo {
+        return paymentInfo.ecmpRecipientInfo
+    }
+    private fun setRecipientInfo(ecmpRecipientInfo: ECMPRecipientInfo) {
+        paymentInfo.ecmpRecipientInfo = ecmpRecipientInfo
+    }
     //3DS Info
     private fun getEcmpThreeDSecureInfo(): ECMPThreeDSecureInfo? {
         return paymentInfo.ecmpThreeDSecureInfo
@@ -289,6 +299,15 @@ class MainActivity : AppCompatActivity() {
             ECMPScreenDisplayMode.HIDE_DECLINE_FINAL_PAGE,
             ECMPScreenDisplayMode.HIDE_SUCCESS_FINAL_PAGE
         ))
+    }
+
+    private fun setupRecipientInfo() {
+        val ecmpRecipientInfo = ECMPRecipientInfo(
+            "Wallet owner's name",
+            "Your wallet id",
+            "Country"
+        )
+        setRecipientInfo(ecmpRecipientInfo)
     }
 
     // Setup 3D Secure parameters
