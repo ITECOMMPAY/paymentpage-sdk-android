@@ -317,8 +317,23 @@ public class MainActivity extends AppCompatActivity {
         ECMPRecipientInfo ecmpRecipientInfo = new ECMPRecipientInfo(
                 "Wallet owner's name",
                 "Your wallet id",
-                "Country"
+                "Country",
+                "Address",
+                "Cardholder",
+                "Pan",
+                "City",
+                "State code"
         );
+        //Or another way
+//        ECMPRecipientInfo ecmpRecipientInfo = new ECMPRecipientInfo();
+//        ecmpRecipientInfo.setWalletOwner("Wallet owner's name");
+//        ecmpRecipientInfo.setWalletId("Your wallet id");
+//        ecmpRecipientInfo.setCountry("Country");
+//        ecmpRecipientInfo.setAddress("Address");
+//        ecmpRecipientInfo.setCardholder("Cardholder");
+//        ecmpRecipientInfo.setPan("Pan");
+//        ecmpRecipientInfo.setCity("City");
+//        ecmpRecipientInfo.setStateCode("State code");
         setRecipientInfo(ecmpRecipientInfo);
     }
 

@@ -305,8 +305,23 @@ class MainActivity : AppCompatActivity() {
         val ecmpRecipientInfo = ECMPRecipientInfo(
             "Wallet owner's name",
             "Your wallet id",
-            "Country"
+            "Country",
+            "Address",
+            "Cardholder",
+            "Pan",
+            "City",
+            "State code"
         )
+        //Or another way
+//        val ecmpRecipientInfo = ECMPRecipientInfo()
+//        ecmpRecipientInfo.walletOwner = "Wallet owner's name"
+//        ecmpRecipientInfo.walletId = "Your wallet id"
+//        ecmpRecipientInfo.country = "Country"
+//        ecmpRecipientInfo.address = "Address"
+//        ecmpRecipientInfo.cardholder = "Cardholder"
+//        ecmpRecipientInfo.pan = "Pan"
+//        ecmpRecipientInfo.city = "City"
+//        ecmpRecipientInfo.stateCode = "State code"
         setRecipientInfo(ecmpRecipientInfo)
     }
 
