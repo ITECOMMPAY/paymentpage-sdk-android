@@ -25,14 +25,14 @@ implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
 implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 //Android
 implementation 'io.card:android-sdk:5.5.1'
-implementation 'androidx.appcompat:appcompat:1.0.0'
+implementation 'androidx.appcompat:appcompat:1.5.1'
 implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 implementation 'androidx.recyclerview:recyclerview:1.0.0'
 implementation 'com.google.code.gson:gson:2.8.4'
 implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 implementation 'androidx.lifecycle:lifecycle-viewmodel:2.0.0'
 implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-implementation 'com.google.android.gms:play-services-wallet:18.1.3'
+implementation 'com.google.android.gms:play-services-wallet:19.1.0'
 kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
 ``` 
 If some of the dependencies are already added in the dependencies {} section, do not add them again.
@@ -121,35 +121,70 @@ startActivityForResult(ECMPActivity.buildIntent(this,
 ```
 ****
 ## Response processing
-To receive and process response with the payment processing results you need to override the `onActivityResult` method in activity from which you started `ECMPActivity`.
+To receive and process response with the payment processing results you need to override the `onActivityResult` method in activity from which you started `ECMPActivity`, but it's deprecated now.
 ```
 @Override
- protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-     super.onActivityResult(requestCode, resultCode, data);
-     if (requestCode == PAY_ACTIVITY_REQUEST) {
-         switch (resultCode) {
-             case ECMPActivity.RESULT_SUCCESS:
-                 // Add your code to execute when checkout completes successfully
-             case ECMPActivity.RESULT_CANCELLED:
-                 // Add your code to execute when customer cancels checkout
-             case ECMPActivity.RESULT_DECLINE:
-                 // Add your code to execute when checkout is declined
-             case ECMPActivity.RESULT_FAILED:
-                 // Add your code to execute when checkout fails
-                 break;
-         }
-         if (data != null && data.hasExtra(ECMPActivity.DATA_INTENT_EXTRA_ERROR)) {
-            String error = data.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_ERROR);
-         }
-         if(data != null && data.hasExtra(ECMPActivity.DATA_INTENT_EXTRA_TOKEN)) {
-             String token = data.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_TOKEN);
-         }
-         if(data != null && data.hasExtra(ECMPActivity.DATA_INTENT_SESSION_INTERRUPTED)) {
-             String token = data.getStringExtra(ECMPActivity.DATA_INTENT_SESSION_INTERRUPTED);
-         }
-     }
- }
+protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == PAY_ACTIVITY_REQUEST) {
+        switch (resultCode) {
+            case ECMPActivity.RESULT_SUCCESS:
+                // Add your code to execute when checkout completes successfully
+            case ECMPActivity.RESULT_CANCELLED:
+                // Add your code to execute when customer cancels checkout
+            case ECMPActivity.RESULT_DECLINE:
+                // Add your code to execute when checkout is declined
+            case ECMPActivity.RESULT_FAILED:
+                // Add your code to execute when checkout fails
+                break;
+        }
+        if (data != null && data.hasExtra(ECMPActivity.DATA_INTENT_EXTRA_ERROR)) {
+           String error = data.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_ERROR);
+        }
+        if (data != null && data.hasExtra(ECMPActivity.DATA_INTENT_EXTRA_TOKEN)) {
+            String token = data.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_TOKEN);
+        }
+        if (data != null && data.hasExtra(ECMPActivity.DATA_INTENT_SESSION_INTERRUPTED) &&
+                data.getBooleanExtra(ECMPActivity.DATA_INTENT_SESSION_INTERRUPTED, false)) {
+           //Do something to handle interrupted payment session
+        }
+    }
+}
 ```
+
+Also you can use Activity Result API.
+```
+private final ActivityResultLauncher<Intent> startActivityForResult = registerForActivityResult(
+    new ActivityResultContracts.StartActivityForResult(),
+    result -> {
+        Intent data = result.getData();
+        switch (result.getResultCode()) {
+            case ECMPActivity.RESULT_SUCCESS:
+                // Add your code to execute when checkout completes successfully
+            case ECMPActivity.RESULT_CANCELLED:
+                // Add your code to execute when customer cancels checkout
+            case ECMPActivity.RESULT_DECLINE:
+                // Add your code to execute when checkout is declined
+            case ECMPActivity.RESULT_FAILED:
+                // Add your code to execute when checkout fails
+                break;
+        }
+        if (data != null && data.hasExtra(ECMPActivity.DATA_INTENT_EXTRA_ERROR)) {
+            String error = data.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_ERROR);
+        }
+        if (data != null && data.hasExtra(ECMPActivity.DATA_INTENT_EXTRA_TOKEN)) {
+            String token = data.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_TOKEN);
+        }
+        if (data != null && data.hasExtra(ECMPActivity.DATA_INTENT_SESSION_INTERRUPTED) &&
+                data.getBooleanExtra(ECMPActivity.DATA_INTENT_SESSION_INTERRUPTED, false)) {
+            //Do something to handle interrupted payment session
+        }
+    }
+);
+
+startActivityForResult.launch(ECMPActivity.buildIntent(this, paymentInfo));
+```
+
 The following table lists the possible values of response codes as well as the corresponding constant names and description along with the suggested response actions:
 | RESPONSE CODE | RESULT CONSTANT | DESCRIPTION |
 | -----|------|------|

@@ -1,7 +1,11 @@
 package com.ecommpay.ecommpaysdktestintegrationjava;
 
+import static com.ecommpay.ecommpaysdktestintegrationjava.Utils.showMessage;
+
 import android.content.Intent;
-import androidx.annotation.Nullable;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
@@ -14,8 +18,9 @@ import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
+    //If you using onActivityResult() (DEPRECATED)
+    //private static int PAY_ACTIVITY_REQUEST = 888;
 
-    private static int PAY_ACTIVITY_REQUEST = 888;
     private static int PROJECT_ID = 123;
     private static String SECRET = "your_secret";
     private static String RANDOM_PAYMENT_ID = "test_integration_ecommpay_" + getRandomNumber();
@@ -29,7 +34,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //STEP 2: Signature should be generated on your server and delivered to your app
-        String signature = SignatureGenerator.generateSignature(getParamsForSigning(), SECRET);
+        String signature = SignatureGenerator.generateSignature(
+                getParamsForSigning(),
+                SECRET
+        );
 
         //STEP 3: Sign payment info object
         setSignature(signature);
@@ -38,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         Intent SDKIntent = ECMPActivity.buildIntent(this, paymentInfo);
 
         //STEP 5: Present Checkout UI (default theme is light)
-        startActivityForResult(SDKIntent, PAY_ACTIVITY_REQUEST);
+        startActivityForResult.launch(SDKIntent);
 
         //Additional STEP (if necessary): custom theme
         //And then override STEP 4 like that:
@@ -72,28 +80,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Handle SDK result
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PAY_ACTIVITY_REQUEST) {
+    private final ActivityResultLauncher<Intent> startActivityForResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                Intent data = result.getData();
+                switch (result.getResultCode()) {
+                    case ECMPActivity.RESULT_SUCCESS: {
+                        showMessage(this, "Success");
+                        break;
+                    }
+                    case ECMPActivity.RESULT_CANCELLED: {
+                        showMessage(this, "Cancelled");
+                        break;
+                    }
+                    case ECMPActivity.RESULT_DECLINE: {
+                        showMessage(this, "Decline");
+                        break;
+                    }
+                    case ECMPActivity.RESULT_FAILED: {
+                        showMessage(this, "Failed");
+                        break;
+                    }
+                }
+                if (data != null && data.hasExtra(ECMPActivity.DATA_INTENT_EXTRA_ERROR)) {
+                    String error = data.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_ERROR);
+                }
 
-            switch (resultCode) {
-                case ECMPActivity.RESULT_SUCCESS:
-                case ECMPActivity.RESULT_CANCELLED:
-                case ECMPActivity.RESULT_DECLINE:
-                case ECMPActivity.RESULT_FAILED:
-                    break;
-            }
+                if (data != null && data.hasExtra(ECMPActivity.DATA_INTENT_EXTRA_TOKEN)) {
+                    String token = data.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_TOKEN);
+                }
 
-            if(data != null && data.hasExtra(ECMPActivity.DATA_INTENT_EXTRA_ERROR)) {
-                String error = data.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_ERROR);
+                if (data != null && data.hasExtra(ECMPActivity.DATA_INTENT_SESSION_INTERRUPTED) &&
+                        data.getBooleanExtra(ECMPActivity.DATA_INTENT_SESSION_INTERRUPTED, false)) {
+                    //Do something to handle interrupted payment session
+                }
             }
-
-            if(data != null && data.hasExtra(ECMPActivity.DATA_INTENT_EXTRA_TOKEN)) {
-                String token = data.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_TOKEN);
-            }
-        }
-    }
+    );
 
     // Payment Info
     ECMPPaymentInfo getPaymentInfoOnlyRequiredParams() {

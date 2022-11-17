@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Ecommpay SDK Test Integration Kotlin</string>
+    <string name="ok_text" translatable="false">OK</string>
 </resources>

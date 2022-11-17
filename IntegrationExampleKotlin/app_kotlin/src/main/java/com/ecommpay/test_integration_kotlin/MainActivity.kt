@@ -3,19 +3,24 @@ package com.ecommpay.test_integration_kotlin
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.ecommpay.sdk.*
 import com.ecommpay.sdk.threeDSecure.*
+import com.ecommpay.test_integration_kotlin.Utils.showMessage
 import com.google.android.gms.wallet.PaymentDataRequest
 import java.util.*
+import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
+    //If you use deprecated onActivityResult()
+    //private val PAY_ACTIVITY_REQUEST = 888
 
-    private val PAY_ACTIVITY_REQUEST = 888
     private val PROJECT_ID = 123
     private val SECRET = "your_secret"
     private val RANDOM_PAYMENT_ID = "test_integration_ecommpay_${getRandomNumber()}"
-    private lateinit var paymentInfo: ECMPPaymentInfo
+    private var paymentInfo by Delegates.notNull<ECMPPaymentInfo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +30,10 @@ class MainActivity : AppCompatActivity() {
         paymentInfo = getPaymentInfoOnlyRequiredParams() // getPaymentInfoAllParams
 
         //STEP 2: Signature should be generated on your server and delivered to your app
-        val signature = SignatureGenerator.generateSignature(getParamsForSigning() ?: "", SECRET)
+        val signature = SignatureGenerator.generateSignature(
+            paramsToSign = getParamsForSigning() ?: "",
+            secret = SECRET
+        )
 
         //STEP 3: Sign payment info object
         setSignature(signature)
@@ -34,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         val SDKIntent = ECMPActivity.buildIntent(this, paymentInfo)
 
         //STEP 5: Present Checkout UI (default theme is light)
-        startActivityForResult(SDKIntent, PAY_ACTIVITY_REQUEST)
+        startActivityForResult.launch(SDKIntent)
 
         //Additional STEP (if necessary): custom theme
         //And then override STEP 4 like that:
@@ -62,19 +70,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     //STEP 6: Handle SDK result
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PAY_ACTIVITY_REQUEST) {
-            when (resultCode) {
-                ECMPActivity.RESULT_SUCCESS -> {}
-                ECMPActivity.RESULT_CANCELLED -> {}
-                ECMPActivity.RESULT_DECLINE -> {}
-                ECMPActivity.RESULT_FAILED -> {}
+    private val startActivityForResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val data = result.data
+            when (result.resultCode) {
+                ECMPActivity.RESULT_SUCCESS -> {
+                    showMessage(this, "Success")
+                }
+                ECMPActivity.RESULT_CANCELLED -> {
+                    showMessage(this, "Cancelled")
+                }
+                ECMPActivity.RESULT_DECLINE -> {
+                    showMessage(this, "Decline")
+                }
+                ECMPActivity.RESULT_FAILED -> {
+                    showMessage(this, "Failed")
+                }
             }
             val error = data?.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_ERROR)
             val token = data?.getStringExtra(ECMPActivity.DATA_INTENT_EXTRA_TOKEN)
+            val isSessionInterrupted = data?.getBooleanExtra(ECMPActivity.DATA_INTENT_SESSION_INTERRUPTED, false)
         }
-    }
 
     //Only for testing
     private fun getRandomNumber(): String {
@@ -83,185 +99,135 @@ class MainActivity : AppCompatActivity() {
     }
 
     //Getters for payment info
-    private fun getPaymentInfoOnlyRequiredParams(): ECMPPaymentInfo { //Default payment action type is ActionType.Sale
-        return ECMPPaymentInfo(
-            PROJECT_ID, // Project ID that is assigned to you
-            RANDOM_PAYMENT_ID, // Payment ID to identify payment in your system
-            100, // 1.00
-            "USD" // Payment currency (see the ISO 4217 codes list)
-        )
-    }
+    //Default payment action type is ActionType.Sale
+    private fun getPaymentInfoOnlyRequiredParams() = ECMPPaymentInfo(
+        PROJECT_ID, // Project ID that is assigned to you
+        RANDOM_PAYMENT_ID, // Payment ID to identify payment in your system
+        100, // 1.00
+        "USD" // Payment currency (see the ISO 4217 codes list)
+    )
 
-    private fun getPaymentInfoAllParams(): ECMPPaymentInfo { //Default payment action type is ActionType.Sale
-        return ECMPPaymentInfo(
-            PROJECT_ID, // Project ID that is assigned to you
-            RANDOM_PAYMENT_ID, // Payment ID to identify payment in your system
-            100, // 1.00
-            "USD", // Payment currency (see the ISO 4217 codes list)
-            "T-shirt with dog print",
-            "10", // unique ID assigned to your customer
-            "" //Payment region code (see the ISO 3166-2 codes list)
-        )
-    }
+    //Default payment action type is ActionType.Sale
+    private fun getPaymentInfoAllParams() = ECMPPaymentInfo(
+        PROJECT_ID, // Project ID that is assigned to you
+        RANDOM_PAYMENT_ID, // Payment ID to identify payment in your system
+        100, // 1.00
+        "USD", // Payment currency (see the ISO 4217 codes list)
+        "T-shirt with dog print",
+        "10", // unique ID assigned to your customer
+        "" //Payment region code (see the ISO 3166-2 codes list)
+    )
 
     //Get params for signing payment (do it only after create paymentInfo object)
-    private fun getParamsForSigning(): String? {
-        return paymentInfo.paramsForSignature
-    }
+    private fun getParamsForSigning() = paymentInfo.paramsForSignature
 
     //Getters for all params payment info
-    private fun getSignature(): String? {
-        return paymentInfo.signature
-    }
+    private fun getSignature() = paymentInfo.signature
 
-    private fun getProjectId(): Int {
-        return paymentInfo.projectId
-    }
+    private fun getProjectId() = paymentInfo.projectId
 
-    private fun getPaymentId(): String? {
-        return paymentInfo.paymentId
-    }
+    private fun getPaymentId() = paymentInfo.paymentId
 
-    private fun getPaymentAmount(): Long {
-        return paymentInfo.paymentAmount
-    }
+    private fun getPaymentAmount() = paymentInfo.paymentAmount
 
-    private fun getPaymentCurrency(): String? {
-        return paymentInfo.paymentCurrency
-    }
+    private fun getPaymentCurrency() = paymentInfo.paymentCurrency
 
-    private fun getPaymentDescription(): String? {
-        return paymentInfo.paymentDescription
-    }
+    private fun getPaymentDescription() = paymentInfo.paymentDescription
 
-    private fun getCustomerId(): String? {
-        return paymentInfo.customerId
-    }
+    private fun getCustomerId() = paymentInfo.customerId
 
-    private fun getRegionCode(): String? {
-        return paymentInfo.regionCode
-    }
+    private fun getRegionCode() = paymentInfo.regionCode
 
-    private fun getLanguageCode(): String? { //Default value is mobile device language
-        return paymentInfo.languageCode
-    }
+    //Default value is mobile device language
+    private fun getLanguageCode() = paymentInfo.languageCode
 
-    private fun getToken(): String? {
-        return paymentInfo.token
-    }
+    private fun getToken() = paymentInfo.token
 
-    private fun getReceiptData(): String? {
-        return paymentInfo.receiptData
-    }
+    private fun getReceiptData() = paymentInfo.receiptData
 
-    private fun getBankId(): Int? {
-        return paymentInfo.bankId
-    }
+    private fun getBankId() = paymentInfo.bankId
 
-    private fun getHideSavedWallets(): Boolean? {
-        return paymentInfo.hideSavedWallets
-    }
+    private fun getHideSavedWallets() = paymentInfo.hideSavedWallets
 
-    private fun getForcePaymentMethod(): String? {
-        return paymentInfo.forcePaymentMethod
-    }
+    private fun getForcePaymentMethod() = paymentInfo.forcePaymentMethod
 
-    private fun getAction(): ECMPPaymentInfo.ActionType { //Default payment action type is ActionType.Sale
-        return paymentInfo.action
-    }
+    //Default payment action type is ActionType.Sale
+    private fun getAction() = paymentInfo.action
 
     //Setters for payment info
-    private fun setSignature(signature: String) {
-        paymentInfo.signature = signature
-    }
+
+    private fun setSignature(signature: String) = paymentInfo.apply { this.signature = signature }
+
     //Set the custom language code (see the ISO 639-1 codes list)
-    private fun setLanguageCode() {
-        paymentInfo.languageCode = "language code"
-    }
+    private fun setLanguageCode() = paymentInfo.apply { languageCode = "language code" }
 
-    private fun setToken() {
-        paymentInfo.token = "token"
-    }
+    private fun setToken() = paymentInfo.apply { token = "token" }
 
-    private fun setReceiptData() {
-        paymentInfo.receiptData = "receipt data"
-    }
+    private fun setReceiptData() = paymentInfo.apply { receiptData = "receipt data" }
 
     // if you want to hide the saved cards, pass the value - true
-    private fun setHideSavedWallets() {
-        paymentInfo.hideSavedWallets = false
-    }
+    private fun setHideSavedWallets() = paymentInfo.apply { hideSavedWallets = false }
 
     // For forced opening of the payment method, pass its code. Example: qiwi, card ...
-    private fun setForcePaymentMethod() {
-        paymentInfo.forcePaymentMethod = "card"
-    }
+    private fun setForcePaymentMethod() = paymentInfo.apply { forcePaymentMethod = "card" }
 
-    private fun setBankId() {
-        paymentInfo.bankId = 123
-    }
-
+    private fun setBankId() = paymentInfo.apply { bankId = 123 }
 
     //Additional getters and setters
     //RecurrentInfo
-    private fun getECMPRecurrentInfo(): ECMPRecurrentInfo? {
-        return paymentInfo.ecmpRecurrentInfo
-    }
-    private fun setRecurrentInfo(recurrentInfo: ECMPRecurrentInfo) {
+    private fun getECMPRecurrentInfo() = paymentInfo.ecmpRecurrentInfo
+
+    private fun setRecurrentInfo(recurrentInfo: ECMPRecurrentInfo?) =
         paymentInfo.setRecurrent(recurrentInfo)
-    }
+
     //Screen Display Mode
-    private fun getScreenDisplayModes(): List<ECMPScreenDisplayMode>? {
-        return paymentInfo.ecmpScreenDisplayModes
-    }
-    private fun setEcmpScreenDisplayModes(ecmpScreenDisplayModes: List<ECMPScreenDisplayMode>) {
+    private fun getScreenDisplayModes() = paymentInfo.ecmpScreenDisplayModes
+    private fun setEcmpScreenDisplayModes(ecmpScreenDisplayModes: List<ECMPScreenDisplayMode>?) =
         paymentInfo.setEcmpScreenDisplayMode(ecmpScreenDisplayModes)
-    }
+
     //Alternative variant of setter
-    private fun addEcmpScreenDisplayModes() {
+    private fun addEcmpScreenDisplayModes() =
         paymentInfo
             .addEcmpScreenDisplayMode("hide_decline_final_page")
             .addEcmpScreenDisplayMode("hide_success_final_page")
-    }
+
     //AdditionalFields
-    private fun getECMPAdditionalFields(): Array<ECMPAdditionalField>? {
-        return paymentInfo.ecmpAdditionalFields
-    }
-    private fun setECMPAdditionalFields(ecmpAdditionalFields: Array<ECMPAdditionalField>?) {
-        paymentInfo.ecmpAdditionalFields = ecmpAdditionalFields
-    }
+    private fun getECMPAdditionalFields() = paymentInfo.ecmpAdditionalFields
+    private fun setECMPAdditionalFields(ecmpAdditionalFields: Array<ECMPAdditionalField>?) =
+        paymentInfo.apply { this.ecmpAdditionalFields = ecmpAdditionalFields }
+
+
     //Handling funding for google pay
-    private fun getRecipientInfo(): ECMPRecipientInfo {
-        return paymentInfo.ecmpRecipientInfo
-    }
-    private fun setRecipientInfo(ecmpRecipientInfo: ECMPRecipientInfo) {
-        paymentInfo.ecmpRecipientInfo = ecmpRecipientInfo
-    }
+    private fun getRecipientInfo() = paymentInfo.ecmpRecipientInfo
+    private fun setRecipientInfo(ecmpRecipientInfo: ECMPRecipientInfo?) =
+        paymentInfo.apply { this.ecmpRecipientInfo = ecmpRecipientInfo }
+
     //3DS Info
-    private fun getEcmpThreeDSecureInfo(): ECMPThreeDSecureInfo? {
-        return paymentInfo.ecmpThreeDSecureInfo
-    }
-    private fun setEcmpThreeDSecureInfo(ecmpThreeDSecureInfo: ECMPThreeDSecureInfo?)  {
-        paymentInfo.ecmpThreeDSecureInfo = ecmpThreeDSecureInfo
-    }
+    private fun getEcmpThreeDSecureInfo() = paymentInfo.ecmpThreeDSecureInfo
+    private fun setEcmpThreeDSecureInfo(ecmpThreeDSecureInfo: ECMPThreeDSecureInfo?) =
+        paymentInfo.apply { this.ecmpThreeDSecureInfo = ecmpThreeDSecureInfo }
+
     //Setters for custom payment action type (Auth, Tokenize, Verify)
-    private fun setDMSPayment() {
-        paymentInfo.action = ECMPPaymentInfo.ActionType.Auth
-    }
-    private fun setActionTokenize() {
-        paymentInfo.action = ECMPPaymentInfo.ActionType.Tokenize
-    }
-    private fun setActionVerify() {
-        paymentInfo.action = ECMPPaymentInfo.ActionType.Verify
-    }
-    private fun setAction(action: ECMPPaymentInfo.ActionType) {
-        paymentInfo.action = action
-    }
+    private fun setDMSPayment() =
+        paymentInfo.apply { action = ECMPPaymentInfo.ActionType.Auth }
+
+    private fun setActionTokenize() =
+        paymentInfo.apply { action = ECMPPaymentInfo.ActionType.Tokenize }
+
+    private fun setActionVerify() =
+        paymentInfo.apply { action = ECMPPaymentInfo.ActionType.Verify }
+
+    private fun setAction(action: ECMPPaymentInfo.ActionType) =
+        paymentInfo.apply { this.action = action }
+
 
     private fun setupCustomTheme(): ECMPTheme {
         val customTheme = ECMPTheme.getDarkTheme()
-        customTheme.fullScreenBackgroundColor = Color.GREEN
-        customTheme.showShadow = false
+        with(customTheme) {
+            fullScreenBackgroundColor = Color.GREEN
+            showShadow = false
+            //etc
+        }
         return customTheme
     }
 
@@ -286,42 +252,30 @@ class MainActivity : AppCompatActivity() {
         setRecurrentInfo(recurrentInfo)
     }
 
-    private fun setupAdditionalFields() {
+    private fun setupAdditionalFields() =
         setECMPAdditionalFields(arrayOf(
             ECMPAdditionalField(
                 ECMPAdditionalFieldEnums.AdditionalFieldType.customer_first_name, "Mark"),
             ECMPAdditionalField(
                 ECMPAdditionalFieldEnums.AdditionalFieldType.billing_country, "US")))
-    }
 
-    private fun setupScreenDisplayModes() {
+    private fun setupScreenDisplayModes() =
         setEcmpScreenDisplayModes(arrayListOf(
             ECMPScreenDisplayMode.HIDE_DECLINE_FINAL_PAGE,
             ECMPScreenDisplayMode.HIDE_SUCCESS_FINAL_PAGE
         ))
-    }
 
     private fun setupRecipientInfo() {
         val ecmpRecipientInfo = ECMPRecipientInfo(
             "Wallet owner's name",
             "Your wallet id",
             "Country",
-            "Address",
-            "Cardholder",
-            "Pan",
-            "City",
-            "State code"
+            null,
+            null,
+            null,
+            null,
+            null,
         )
-        //Or another way
-//        val ecmpRecipientInfo = ECMPRecipientInfo()
-//        ecmpRecipientInfo.walletOwner = "Wallet owner's name"
-//        ecmpRecipientInfo.walletId = "Your wallet id"
-//        ecmpRecipientInfo.country = "Country"
-//        ecmpRecipientInfo.address = "Address"
-//        ecmpRecipientInfo.cardholder = "Cardholder"
-//        ecmpRecipientInfo.pan = "Pan"
-//        ecmpRecipientInfo.city = "City"
-//        ecmpRecipientInfo.stateCode = "State code"
         setRecipientInfo(ecmpRecipientInfo)
     }
 
