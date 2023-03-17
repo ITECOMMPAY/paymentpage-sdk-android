@@ -149,6 +149,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun getHideSavedWallets() = paymentInfo.hideSavedWallets
 
+    private fun getHideScanningCards() = paymentInfo.hideScanningCards
+
     private fun getForcePaymentMethod() = paymentInfo.forcePaymentMethod
 
     //Default payment action type is ActionType.Sale
@@ -167,6 +169,9 @@ class MainActivity : AppCompatActivity() {
 
     // if you want to hide the saved cards, pass the value - true
     private fun setHideSavedWallets() = paymentInfo.apply { hideSavedWallets = false }
+
+    // if you want to hide card scanning icon change the value to true
+    private fun setHideScanningCards() = paymentInfo.apply { hideScanningCards = false }
 
     // For forced opening of the payment method, pass its code. Example: qiwi, card ...
     private fun setForcePaymentMethod() = paymentInfo.apply { forcePaymentMethod = "card" }

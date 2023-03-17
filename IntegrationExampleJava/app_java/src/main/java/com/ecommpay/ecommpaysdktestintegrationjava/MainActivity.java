@@ -197,6 +197,10 @@ public class MainActivity extends AppCompatActivity {
         return paymentInfo.getHideSavedWallets();
     }
 
+    private Boolean getHideScanningCards() {
+        return paymentInfo.getHideScanningCards();
+    }
+
     private String getForcePaymentMethod() {
         return paymentInfo.getForcePaymentMethod();
     }
@@ -225,6 +229,11 @@ public class MainActivity extends AppCompatActivity {
     // if you want to hide the saved cards, pass the value - true
     private void setHideSavedWallets() {
         paymentInfo.setHideSavedWallets(false);
+    }
+
+    // if you want to hide card scanning icon change the value to true
+    private void setHideScanningCards() {
+        paymentInfo.setHideScanningCards(false);
     }
 
     // For forced opening of the payment method, pass its code. Example: qiwi, card ...
