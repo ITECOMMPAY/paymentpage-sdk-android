@@ -94,10 +94,10 @@ Here are the optional parameters:
 - `token` — card token;
 - `forcePaymentMethod` — the identifier of the payment method which is opened to the customer without an option for the customer to select another payment method. The list of codes is provided in the IDs of payment methods supported on Payment Page section
 - `hideSavedWallets` — hiding or displaying saved payment instruments in the payment form.
-- `hideScanningCards` — hiding or displaying card scanning icon in the payment form.
   **Possible values:**
     + true — saved payment instruments are hidden, they are not displayed in the payment form
     + false — saved payment instruments are displayed in the payment form
+- `hideScanningCards` — hiding or displaying card scanning icon in the payment form.
 - `ECMPScreenDisplayMode` — object to manage display of the final page of the payment form and hide the final page if necessary.
 
   **The following parameters can be passed in the object:**
